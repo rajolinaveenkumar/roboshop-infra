@@ -1,0 +1,96 @@
+pipeline {
+    agent {
+        label 'agent-1-label'
+    }
+
+    environment {
+        project = 'expense'
+        environment = 'dev'
+    }
+
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Please Choose the Right Action')
+    }
+  
+
+    options {
+        timeout(time: 40, unit: 'MINUTES')
+        ansiColor('xtrem')
+        disableConcurrentBuilds()        
+    }
+
+    stages {
+        stage('terraform init') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth') {
+                    sh """
+                        cd 01-vpc
+                        terraform init -reconfigure
+                    """
+                }
+            }
+        }
+
+        stage('terraform plan') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth') {
+                    sh """
+                        cd 01-vpc
+                        terraform plan -out=tfplan
+                    """
+                }
+            }
+        }
+
+        stage('apply or destroy') {
+            // input {
+            //     submitter 'Naveen Rajoli'
+            //     message "Should we continue to ${params.ACTION}"
+            //     ok "yes, ${params.ACTION}"
+            // }
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth') {
+                    sh """
+                        cd 01-vpc
+                        if [ ${params.ACTION} == 'apply' ]
+                        then
+                            terraform apply -auto-approve tfplan
+                        elif [ ${params.ACTION} == 'destroy' ]
+                        then
+                            terraform destroy -auto-approve
+                        fi
+                    """
+                }
+            }
+        }
+
+        stage ('Trigger Downstream Job') {
+            when {
+                expression {
+                    params.ACTION == 'apply'
+                }
+            }
+            steps {
+                build job: '11-sg', parameters: [string(name:'ACTION', value: 'apply')], wait: false
+                // wait: false means --> Start the downstream job, but don’t wait for it to finish. if nothing mention it will take default value is true. y.
+            }
+        }
+
+
+    }
+
+    post {
+        always{
+            echo 'this will run always'
+            deleteDir()
+        }
+        success{
+            echo 'this will run on success'
+        }
+        failure{
+            echo 'this will run at failure'
+        }
+    }
+
+
+}

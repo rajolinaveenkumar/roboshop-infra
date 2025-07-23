@@ -1,0 +1,138 @@
+pipeline {
+    agent {
+        label 'agent-1-label'
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Please Choose the Action')
+    }
+
+    stages {
+        stage('terraform init') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth') {
+                    sh """
+                        cd 11-sg
+                        terraform init -reconfigure
+                    """
+                }
+            }
+        }
+
+        stage('terraform plan') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth') {
+                    sh """
+                        cd 11-sg
+                        terraform plan -out=tfplan
+                    """
+                }
+            }
+        }
+
+        stage('terraform apply or destroy') {
+            steps {
+                withAWS(region: 'us-east', credentials: 'aws-auth') {
+                    sh """
+                        cd 11-sg
+                        if [ ${params.ACTION} == 'apply' ]
+                        then
+                            terraform apply -auto-approve tfplan
+                        elif [ ${params.ACTION} == 'destroy' ]
+                        then
+                            terraform destroy -auto-approve
+                        fi
+                    """
+                }
+            }
+        }
+
+        stage('Parallel Stages') {
+            when {
+                expression {
+                    params.ACTION == 'apply'
+                }
+            }
+            parallel  {
+                stage('bastion') {
+                    steps {
+                        build job: '21-bastion', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                        // wait: false means --> Start the downstream job, but don’t wait for it to finish. if nothing mention it will take default value is true.                     
+                    }
+                }
+                stage('rds') {
+                    steps {
+                        build job: '31-rds', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                    }
+                }
+                stage('eks') {
+                    steps {
+                        build job: '41-eks', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                    }
+                }
+
+            }
+        }
+
+        stage('Sequential') {
+            when  {
+                expression {
+                    params.ACTION == 'apply'
+                }
+            }
+            stages {
+                stage('acm') {
+                    steps {
+                        build job: '51-acm', parameters: [string(name: 'ACTION', value: 'apply')]
+                        // If wait: false is not mentioned, it will default to true, which means Jenkins will wait for the downstream job to complete before moving to the next stage.
+                    }
+                }
+                stage('ingress-alb') {
+                    steps {
+                        build job: '61-ingress-alb', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                    }
+                }
+                stage('ecr') {
+                    steps {
+                        build job: '71-ecr', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                    }
+                }
+                stage('cdn') {
+                    steps {
+                        build job: '81-cdn', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
+                    }
+                }
+            }
+        }
+
+        stage('Trigger Destroy VPC') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                build job: '01-vpc', parameters: [string(name: 'ACTION', value: 'destroy')], wait: false
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "this run always"
+            deleteDir()
+        }
+        success {
+            echo "This will run only if job success"
+        }
+
+        failure {
+            echo "This will runs only if job fail"
+        }
+
+    }
+}

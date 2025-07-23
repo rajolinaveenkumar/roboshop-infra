@@ -1,0 +1,125 @@
+pipeline {
+    agent {
+        label 'agent-1-label'
+    } 
+
+    options {
+        timeout(time: 59, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Please select an a Action')
+    }
+
+    stages {
+        stage('terraform init') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth' ) {
+                    sh """
+                        cd 81-cdn
+                        terraform init -reconfigure
+                    """
+                }
+            }
+        }
+
+        stage('terraform plan') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth' ) {
+                    sh """
+                        cd 81-cdn
+                        terraform plan -out=tfplan
+                    """
+                }
+            }
+        }
+
+        stage('terraform apply or destroy ') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-auth' ) {
+                    sh """
+                        cd 81-cdn
+                        if [ ${params.ACTION} == 'apply' ]
+                        then
+                            terraform apply -auto-approve tfplan
+                        elif [ ${params.ACTION} == 'destroy' ]
+                        then
+                            terraform destroy -auto-approve
+                        fi
+                    """
+                }
+            }
+        }
+
+        stage('Sequential destroy') {
+            when {
+                expression {
+                    params.ACTION == 'destroy'
+                }
+            }
+
+            stages {
+                stage('ecr') {
+                    steps {
+                        build job: '71-ecr', parameters: [string(name: 'ACTION', value: 'destroy')]
+                            // If wait: false is not mentioned, it will default to true, which means Jenkins will wait for the downstream job to complete before moving to the next stage.
+                    }
+                }
+                stage('ingress-alb') {
+                    steps {                        
+                        build job: '61-ingress-alb', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                stage('acm') {
+                    steps {                        
+                        build job: '51-acm', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                stage('eks') {
+                    steps {                        
+                        build job: '41-eks', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                stage('rds') {
+                    steps {                        
+                        build job: '31-rds', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                stage('bastion') {
+                    steps {                        
+                        build job: '21-bastion', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                stage('sg') {
+                    steps {                        
+                        build job: '11-sg', parameters: [string(name: 'ACTION', value: 'destroy')]
+                    }
+                }
+                // stage('bastion') {
+                //     steps {                        
+                //         build job: '21-bastion', parameters: [string(name: 'ACTION', value: 'destroy')]
+                //     }
+                // }
+                                
+            }
+        }
+    }
+
+
+    post {
+        always {
+            echo "this run always"
+            deleteDir()
+        }
+        success {
+            echo "This will run only if job success"
+        }
+
+        failure {
+            echo "This will runs only if job fail"
+        }
+
+    }
+}
