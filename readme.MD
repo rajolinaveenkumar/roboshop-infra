@@ -26,7 +26,7 @@ git clone https://github.com/daws-82s/shipping.git
 ```
 * Load the data into mysql
 ```
-mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1 < shipping/db/schema.sql
+mysql -h mysql-dev.naveenrajoli.site -u root -pRoboShop1 < shipping/db/schema.sql
 ```
 ```
 mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1 < shipping/db/app-user.sql
