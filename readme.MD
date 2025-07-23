@@ -50,7 +50,7 @@ aws configure
 ```
 
 ```
-aws eks update-kubeconfig --region us-east-1 --name roboshop-dev
+aws eks update-kubeconfig --region us-east-1 --name roboshop-dev-eks
 ```
 
 ```
@@ -77,10 +77,10 @@ aws iam create-policy \
 * Create Service account. Replace your account ID.
 ```
 eksctl create iamserviceaccount \
---cluster=roboshop-dev \
+--cluster=roboshop-dev-eks \
 --namespace=kube-system \
 --name=aws-load-balancer-controller \
---attach-policy-arn=arn:aws:iam::315069654700:policy/AWSLoadBalancerControllerIAMPolicy \
+--attach-policy-arn=arn:aws:iam::343430925817:policy/AWSLoadBalancerControllerIAMPolicy \
 --override-existing-serviceaccounts \
 --region us-east-1 \
 --approve
@@ -93,7 +93,7 @@ helm repo add eks https://aws.github.io/eks-charts
 ```
 
 ```
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=roboshop-dev --set serviceAccount.create=true --set serviceAccount.name=aws-load-balancer-controller
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=roboshop-dev-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
 ```
 
 * Make sure load balancer pods are running
