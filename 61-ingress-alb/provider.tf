@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "rnk-s3-bucket"
-    key            = "frontend"
+    key            = "ingress-alb-roboshop"
     region         = "us-east-1"
     dynamodb_table = "rnk-s3-locking"
   }

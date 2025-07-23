@@ -1,6 +1,6 @@
 
 variable "project_name" {
-    default = "expense"
+    default = "roboshop"
 }
 
 variable "environment" {
@@ -9,17 +9,17 @@ variable "environment" {
 
 variable "common_tags" {
     default = {
-        Project         = "Expense"
+        Project         = "roboshop"
         Environment     = "Dev"
         CreatedBy = "naveenrajoli@rajoli.com"
         Team            = "DevSecOps" 
-        Application     = "Expense Tracker API" 
+        Application     = "roboshop Tracker API" 
     }
 }
 
 variable "vpc_tags" {
     default = {
-        Purpose = "VPC-creation-for-expense-project"
+        Purpose = "VPC-creation-for-roboshop-project"
     }
 }
 
@@ -68,6 +68,6 @@ variable "database_subnet_tags" {
 
 variable "vpc_peering_tags" {
     default = {
-        Name = "VPC Peering between expense vpc and default vpc" 
+        Name = "VPC Peering between roboshop vpc and default vpc" 
     }
 }

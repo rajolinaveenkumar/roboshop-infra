@@ -8,7 +8,7 @@ terraform {
 
     backend "s3" {
         bucket = "rnk-s3-bucket"
-        key = "security-groups-for-expense-project"
+        key = "security-groups-for-roboshop-project"
         region = "us-east-1"
         dynamodb_table = "rnk-s3-locking"
     }

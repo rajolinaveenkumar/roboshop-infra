@@ -15,6 +15,6 @@ module "expense_vpc" {
     database_subnet_cidr = var.database_subnet_cidr
     database_subnet_tags = var.database_subnet_tags
     vpc_peering_tags = var.vpc_peering_tags
-    # is_peering_required       = true # This is for peering b/w 2 vpc's
+    is_peering_required       = true # This is for peering b/w 2 vpc's
 }
 

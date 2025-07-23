@@ -16,7 +16,7 @@ module "mysql_sg" {
     # source = "../../terraform-sg-module-dev"
     source = "git::https://github.com/rajolinaveenkumar/terraform-sg-module-dev.git?ref=main"
     sg_name = "mysql-sg"
-    description = "mysql Security group for expense project"
+    description = "mysql Security group for roboshop project"
     vpc_id = data.aws_ssm_parameter.vpc_id.value
     project_name = var.project_name
     environment = var.environment
@@ -29,7 +29,7 @@ module "eks_master_sg" {
     # source = "../../terraform-sg-module-dev"
     source = "git::https://github.com/rajolinaveenkumar/terraform-sg-module-dev.git?ref=main"
     sg_name = "eks-master-sg"
-    description = "eks control plan Security group for expense project"
+    description = "eks control plan Security group for roboshop project"
     vpc_id = data.aws_ssm_parameter.vpc_id.value
     project_name = var.project_name
     environment = var.environment
@@ -42,7 +42,7 @@ module "eks_nodes_sg" {
     # source = "../../terraform-sg-module-dev"
     source = "git::https://github.com/rajolinaveenkumar/terraform-sg-module-dev.git?ref=main"
     sg_name = "eks-nodes-sg"
-    description = "eks nodes Security group for expense project"
+    description = "eks nodes Security group for roboshop project"
     vpc_id = data.aws_ssm_parameter.vpc_id.value
     project_name = var.project_name
     environment = var.environment
@@ -55,7 +55,7 @@ module "ingress_alb_sg" {
     # source = "../../terraform-sg-module-dev"
     source = "git::https://github.com/rajolinaveenkumar/terraform-sg-module-dev.git?ref=main"
     sg_name = "ingress-alb-sg"
-    description = "Ingress Load Balancer group for expense project"
+    description = "Ingress Load Balancer group for roboshop project"
     vpc_id = data.aws_ssm_parameter.vpc_id.value
     project_name = var.project_name
     environment = var.environment

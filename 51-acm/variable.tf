@@ -1,5 +1,5 @@
 variable "project_name" {
-    default = "expense"
+    default = "roboshop"
 }
 
 variable "environment" {
@@ -8,11 +8,11 @@ variable "environment" {
 
 variable "common_tags" {
     default = {
-        Project         = "Expense"
+        Project         = "roboshop"
         Environment     = "Dev"
         CreatedBy = "naveenrajoli@rajoli.com"
         Team            = "DevSecOps" 
-        Application     = "Expense Tracker API" 
+        Application     = "roboshop Tracker API" 
     }
 }
 
