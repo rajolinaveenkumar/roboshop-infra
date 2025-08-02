@@ -31,7 +31,7 @@ resource "aws_lb_listener" "front_end" {
 
     fixed_response {
       content_type = "text/html"
-      message_body = "<h1>Expense App Site Under Maintenance. Please check back later.</h1>"
+      message_body = "<h1>Roboshop App Site Under Maintenance. Please check back later.</h1>"
       status_code  = "200"
     }
   }
@@ -46,7 +46,7 @@ resource "aws_lb_listener_rule" "backend" {
   }
   condition {
     host_header {
-      values = ["expense-${var.environment}.${local.zone_name}"]
+      values = ["roboshop-${var.environment}.${local.zone_name}"]
     }
   }
 }

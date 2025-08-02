@@ -16,14 +16,14 @@ resource "aws_ecr_repository" "redis" {
   }
 }
 
-resource "aws_ecr_repository" "rabbitmq" {
-  name                 = "${var.project_name}-${var.environment}/rabbitmq"
-  image_tag_mutability = "MUTABLE"
-  force_delete = true
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
+# resource "aws_ecr_repository" "rabbitmq" {
+#   name                 = "${var.project_name}-${var.environment}/rabbitmq"
+#   image_tag_mutability = "MUTABLE"
+#   force_delete = true
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 
 resource "aws_ecr_repository" "catalogue" {
   name                 = "${var.project_name}-${var.environment}/catalogue"
@@ -70,14 +70,14 @@ resource "aws_ecr_repository" "payment" {
   }
 }
 
-resource "aws_ecr_repository" "dispatch" {
-  name                 = "${var.project_name}-${var.environment}/dispatch"
-  image_tag_mutability = "MUTABLE"
-  force_delete = true
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
+# resource "aws_ecr_repository" "dispatch" {
+#   name                 = "${var.project_name}-${var.environment}/dispatch"
+#   image_tag_mutability = "MUTABLE"
+#   force_delete = true
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 
 resource "aws_ecr_repository" "frontendroboshop" {
   name                 = "${var.project_name}-${var.environment}/frontendroboshop"

@@ -1,4 +1,4 @@
-resource "aws_cloudfront_distribution" "expense" {
+resource "aws_cloudfront_distribution" "roboshop" {
   origin {
     domain_name              = "${var.project_name}-${var.environment}.${var.domain_name}"
     origin_id                = "${var.project_name}-${var.environment}.${var.domain_name}"
@@ -69,13 +69,13 @@ resource "aws_cloudfront_distribution" "expense" {
 
 resource "aws_route53_record" "cdn" {
   zone_id = local.zone_id
-  name    = "expense-cdn.${var.domain_name}"
+  name    = "roboshop-cdn.${var.domain_name}"
   type    = "A"
 
   # these are ALB DNS name and zone information
   alias {
-    name                   = aws_cloudfront_distribution.expense.domain_name
-    zone_id                = aws_cloudfront_distribution.expense.hosted_zone_id
+    name                   = aws_cloudfront_distribution.roboshop.domain_name
+    zone_id                = aws_cloudfront_distribution.roboshop.hosted_zone_id
     evaluate_target_health = false
   }
   allow_overwrite = true
