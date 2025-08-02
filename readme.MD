@@ -26,7 +26,7 @@ mysql -h mysql-dev.naveenrajoli.site -u root -pRoboShop1
 ```
 * Clone shipping component into bastion
 ```
-git clone https://github.com/daws-82s/shipping.git
+git clone https://github.com/rajolinaveenkumar/shipping-roboshop.git
 ```
 * Load the data into mysql
 ```
