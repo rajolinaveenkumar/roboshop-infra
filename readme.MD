@@ -20,6 +20,10 @@ We are using bastion as our EKS client, so it will have
 ```
 mysql -h roboshop-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pRoboShop1
 ```
+OR 
+```
+mysql -h mysql-dev.naveenrajoli.site -u root -pRoboShop1
+```
 * Clone shipping component into bastion
 ```
 git clone https://github.com/daws-82s/shipping.git
