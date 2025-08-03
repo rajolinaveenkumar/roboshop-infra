@@ -8,13 +8,14 @@ terraform {
 
   backend "s3" {
     bucket         = "rnk-s3-bucket"
-    key            = "roboshop-ecr"
+    key            = "expense-tg"
     region         = "us-east-1"
     dynamodb_table = "rnk-s3-locking"
   }
 }
 
 provider "aws" {
-  region = "us-east"
+  region = "us-east-1"
+
 }
 

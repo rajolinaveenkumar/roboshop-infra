@@ -21,9 +21,9 @@ resource "aws_lb_target_group" "expense_tg" {
   }
 }
 
-resource "aws_lb_listener_rule" "backend" {
+resource "aws_lb_listener_rule" "expense_backend" {
   listener_arn = data.aws_ssm_parameter.listener_arn.value
-  priority     = 10
+  priority     = 11
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.expense_tg.arn
