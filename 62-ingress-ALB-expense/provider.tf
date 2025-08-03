@@ -1,20 +1,20 @@
 terraform {
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "5.98.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.98.0"
     }
+  }
 
-    backend "s3" {
-        bucket         = "rnk-s3-bucket"
-        key            = "roboshop-ecr"
-        region         = "us-east-1"
-        dynamodb_table = "rnk-s3-locking"
-    }
+  backend "s3" {
+    bucket         = "rnk-s3-bucket"
+    key            = "roboshop-ecr"
+    region         = "us-east-1"
+    dynamodb_table = "rnk-s3-locking"
+  }
 }
 
 provider "aws" {
-    region = "us-east"
+  region = "us-east"
 }
 

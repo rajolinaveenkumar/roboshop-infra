@@ -1,12 +1,12 @@
 # Target group
 
 resource "aws_lb_target_group" "expense_tg" {
-  name     = "${var.exp_project}-${var.environment}-expense-TG"
-  
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = local.vpc_id
-  target_type = "ip"
+  name = "${var.exp_project}-${var.environment}-expense-TG"
+
+  port                 = 8080
+  protocol             = "HTTP"
+  vpc_id               = local.vpc_id
+  target_type          = "ip"
   deregistration_delay = 60
 
   health_check {
@@ -17,7 +17,7 @@ resource "aws_lb_target_group" "expense_tg" {
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 2
-    matcher = "200-299"
+    matcher             = "200-299"
   }
 }
 
