@@ -87,3 +87,34 @@ resource "aws_ecr_repository" "frontendroboshop" {
     scan_on_push = true
   }
 }
+
+#################EXPENSE PROJECT############################################3
+
+resource "aws_ecr_repository" "exp_mysql" {
+  name                 = "expense-dev/mysql"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+resource "aws_ecr_repository" "exp_backend" {
+  name                 = "expense-dev/backend"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+resource "aws_ecr_repository" "exp_frontend" {
+  name                 = "expense-dev/frontend"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+
